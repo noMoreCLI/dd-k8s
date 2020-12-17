@@ -6,7 +6,7 @@ metadata:
 spec:
   controllerUrl: "http://192.168.0.214:8090"
   account: "customer1"
-  appName: "docker-desktop"
+  appName: "docker-desktop-mac"
   serviceAccountName: appdynamics-cluster-agent
   image: "docker.io/appdynamics/cluster-agent:latest"
   logLevel: "DEBUG"
@@ -14,14 +14,20 @@ spec:
   logFileBackups: 3
   stdoutLogging: "true"
   nsToMonitor: [default,dev,stage,prod]
-  defaultAppName: "AI-PROD"
-  instrumentationMethod: Env
+  defaultAppName: "APM-GAME"
+  instrumentationMethod: None
   appNameStrategy: manual
-  nsToInstrumentRegex: stage|dev|prod
+  nsToInstrumentRegex: default|stage|dev|prod
   resourcesToInstrument: [Deployment,StatefulSet]
   imageInfo:
     java:
       image: "docker.io/appdynamics/java-agent:20.9.0"
+      agentMountPath: /opt/appdynamics
+    nodejs:
+      image: "appdynamics/nodejs-agent:20.12.0-14.0.0-stretch-slim"
+      agentMountPath: /opt/appdynamics
+    dotnetcore:
+      image: "docker.io/appdynamics/dotnet-core-agent:latest"
       agentMountPath: /opt/appdynamics
   netvizInfo:
     bciEnabled: true
@@ -39,5 +45,9 @@ spec:
       language: java
       imageInfo:
         image: "docker.io/appdynamics/java-agent:20.6.0"
-        agentMountPath: /opt/appdynamics
-
+        agentMountPath: /opt/appdynamics/ca
+    - namespaceRegex: default
+      language: nodejs
+      analyticsHost: trafostation.stoklasa.net:9080
+      analyticsPort: 9080
+      analyticsSslEnabled: false
