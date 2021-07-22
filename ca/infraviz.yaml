@@ -118,10 +118,10 @@ metadata:
   name: appd-infraviz
   namespace: appdynamics
 spec:
-  controllerUrl: "http://trafostation.stoklasa.net:8090"
+  controllerUrl: "https://ceer.saas.appdynamics.com:443"
   image: "appdynamics/machine-agent-analytics:20.8.0"
-  account: "customer1"
-  globalAccount: "customer1_3ff75cad-ce40-4769-93e8-d22a21aadc3c"
+  account: "ceer"
+  globalAccount: "ceer_a5109a9d-85dd-4feb-9185-4da576c211d7"
   netVizPort: 3892
   enableDockerViz: "true"
   enableMasters: true

@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-frontent
+  # labels:
+  #   application-name: Custom-App
+spec:
+  selector:
+    matchLabels:
+      name: web-frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: web-frontend
+        tier-name: web-frontend
+        application-name: OS-App
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      serviceAccountName: appd-account
+      containers:
+        - name: web-frontend
+          image: astoklas/java-services:non-root
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 200m
+              memory: 900M
+            requests:
+              cpu: 100m
+              memory: 600M
+          ports:
+          - containerPort: 8080
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 999
+            runAsGroup: 999
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-frontend
+spec:
+  selector:
+    name: web-frontend
+  ports:
+  - name: "8080"
+    port: 8080
+    targetPort: 8080
+status:
+  loadBalancer: {}

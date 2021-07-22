@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-services
+spec:
+  selector:
+    matchLabels:
+      name: ai-services
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: ai-services
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+#      serviceAccountName: appd-account
+      containers:
+        - name: ai-services
+          image: astoklas/java-services:non-root
+          imagePullPolicy: IfNotPresent
+          ports:
+          - containerPort: 8080
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 999
+            runAsGroup: 999
+            privileged: false
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-services
+spec:
+  selector:
+    name: ai-services
+  ports:
+  - name: "8080"
+    port: 8080
+    targetPort: 8080
+status:
+  loadBalancer: {}

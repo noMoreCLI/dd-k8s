@@ -4,24 +4,24 @@ metadata:
   name: k8s-cluster-agent
   namespace: appdynamics
 spec:
-  controllerUrl: "http://192.168.0.214:8090"
-  account: "customer1"
-  appName: "docker-desktop-mac"
+  controllerUrl: "https://ceer.saas.appdynamics.com"
+  account: "ceer"
+  appName: "Legion-K8S-Cluster"
   serviceAccountName: appdynamics-cluster-agent
   image: "docker.io/appdynamics/cluster-agent:latest"
   logLevel: "DEBUG"
   logFileSizeMb: 5
   logFileBackups: 3
   stdoutLogging: "true"
-  nsToMonitor: [default,dev,stage,prod]
+  nsToMonitor: [default,dev,stage,prod,non-root]
   defaultAppName: "APM-GAME"
-  instrumentationMethod: None
+  instrumentationMethod: Env
   appNameStrategy: manual
-  nsToInstrumentRegex: default|stage|dev|prod
+  nsToInstrumentRegex: default|stage|dev|prod|non-root
   resourcesToInstrument: [Deployment,StatefulSet]
   imageInfo:
     java:
-      image: "docker.io/appdynamics/java-agent:20.9.0"
+      image: "docker.io/appdynamics/java-agent:20.12.1"
       agentMountPath: /opt/appdynamics
     nodejs:
       image: "appdynamics/nodejs-agent:20.12.0-14.0.0-stretch-slim"
@@ -44,10 +44,65 @@ spec:
       appName: AI-Stage-dockerdesktop
       language: java
       imageInfo:
-        image: "docker.io/appdynamics/java-agent:20.6.0"
-        agentMountPath: /opt/appdynamics/ca
+        image: "docker.io/appdynamics/java-agent:21.6.1"
+        agentMountPath: /opt/appdynamics
     - namespaceRegex: default
+      appName: "apm-game-dev-k8s"
+      labelMatch:
+      - x-apm-game-type: nodejs
       language: nodejs
-      analyticsHost: trafostation.stoklasa.net:9080
-      analyticsPort: 9080
-      analyticsSslEnabled: false
+      imageInfo:
+        image: "appdynamics/nodejs-agent:20.12.0-14.0.0-stretch-slim"
+        agentMountPath: /opt/appdynamics
+        imagePullPolicy: "IfNotPresent"
+      analyticsHost: fra-ana-api.saas.appdynamics.com
+      analyticsPort: 443
+      analyticsSslEnabled: true
+    - namespaceRegex: default
+      appName: "apm-game-dev-k8s"
+      labelMatch:
+      - x-apm-game-type: java
+      language: java
+      imageInfo:
+        image: "docker.io/appdynamics/java-agent:20.9.0"
+        agentMountPath: /opt/appdynamics
+        imagePullPolicy: "IfNotPresent"
+      analyticsHost: fra-ana-api.saas.appdynamics.com
+      analyticsPort: 443
+      analyticsSslEnabled: true
+    - namespaceRegex: default
+      appName: "apm-game-dev-k8s"
+      labelMatch:
+      - x-apm-game-type: dotnetcore
+      language: dotnetcore
+      imageInfo:
+        image: "docker.io/appdynamics/dotnet-core-agent:20.11.0-linux"
+        agentMountPath: /opt/appdynamics
+        imagePullPolicy: "IfNotPresent"
+      analyticsHost: fra-ana-api.saas.appdynamics.com
+      analyticsPort: 443
+      analyticsSslEnabled: true 
+    - namespaceRegex: non-root
+      appName: "astoklas-nonroot-java"
+      language: java
+      imageInfo: 
+        image: "appdynamics/java-agent:21.7.0"
+        agentMountPath: /opt/appdynamics
+      matchString: ^ai-services*
+      runAsUser: 999
+      runAsGroup: 999
+    - namespaceRegex: non-root
+      appName: "astoklas-nonroot-java"
+      language: java
+      imageInfo: 
+        image: "appdynamics/java-agent:21.7.0"
+        agentMountPath: /opt/appdynamics
+      matchString: ^client-api*
+      runAsUser: 999
+      runAsGroup: 999
+    - namespaceRegex: non-root
+      appName: "astoklas-nonroot-java"
+      language: java
+      imageInfo: 
+        image: "appdynamics/java-agent:21.6.1"
+        agentMountPath: /opt/appdynamics
