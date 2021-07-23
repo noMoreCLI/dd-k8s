@@ -21,7 +21,7 @@ spec:
       serviceAccountName: appd-account
       containers:
         - name: client-api
-          image: astoklas/java-services:non-root
+          image: astoklas/java-services:non-root-bellsoft
           imagePullPolicy: IfNotPresent
           resources:
             limits:
